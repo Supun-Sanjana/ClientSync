@@ -1,6 +1,8 @@
 import {
   createClientService,
+  deleteClientByIdService,
   getAllClientsService,
+  getClientByNameService,
   updateClientService,
 } from "../service/client.service.js";
 
@@ -32,9 +34,10 @@ export const updateClient = async (req, res) => {
     const updatedClient = await updateClientService(req.body, id);
 
     if (!updatedClient) {
-      return res.status(404).json({ success: false, message: `Client with ID ${id} not found` });
+      return res
+        .status(404)
+        .json({ success: false, message: `Client with ID ${id} not found` });
     }
-
 
     return res.status(200).json({ "updated client : ": updatedClient });
   } catch (error) {
@@ -44,14 +47,55 @@ export const updateClient = async (req, res) => {
 };
 
 //get all clients
-export const getAllClients = async (req, res)=>{
-    try {
-       const clients  =await getAllClientsService();
-       return res.status(200).json({"clients : ": clients})
-        
-    } catch (error) {
-        console.log(error.message || error);
-        res.status(500).json({"message":error.message || error})
-    }
-}
+export const getAllClients = async (req, res) => {
+  try {
+    const clients = await getAllClientsService();
+    return res.status(200).json({ "clients : ": clients });
+  } catch (error) {
+    console.log(error.message || error);
+    res.status(500).json({ message: error.message || error });
+  }
+};
 
+//get client name
+export const getClientByName = async (req, res) => {
+  const { first_name } = req.params;
+
+  try {
+    const clients = await getClientByNameService(first_name);
+
+    if (clients.length === 0) {
+      return res
+        .status(404)
+        .json({ message: "No clients found matching this name" });
+    }
+
+    return res.status(200).json({ clients });
+  } catch (error) {
+    console.log(error.message);
+    res.status(500).json({ message: error.message || "Server error" });
+  }
+};
+
+//delete client
+export const deleteClientById = async (req, res) => {
+  const { id } = req.params;
+  try {
+    const deletedCount = await deleteClientByIdService(id);
+
+    if (deletedCount === 0) {
+      return res
+        .status(404)
+        .json({ success: false, message: `Client with ID ${id} not found` });
+    }
+
+    return res
+      .status(200)
+      .json({ success: true, message: "Client deleted successfully" });
+  } catch (error) {
+    console.log(error.message);
+    res
+      .status(500)
+      .json({ success: false, message: error.message || "Server error" });
+  }
+};

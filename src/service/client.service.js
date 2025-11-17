@@ -2,8 +2,10 @@
 import pool from "../config/db.js";
 import {
   createClientQuery,
+  deleteClient,
   existingClientQuery,
   getallClients,
+  selectClientByName,
   updateClientQuery,
 } from "../model/client.model.js";
 
@@ -54,20 +56,37 @@ export const updateClientService = async (data, id) => {
       id,
     ]);
     return rows[0];
-
   } catch (error) {
     console.log(error.message || error);
   }
 };
 
-export const getAllClientsService = async ()=>{
-    try {
-        const allClients = await pool.query(getallClients, [])
-        return allClients.rows
-        
-    } catch (error) {
-        console.log(error.message || error);
-        
-    }
-}
+export const getAllClientsService = async () => {
+  try {
+    const allClients = await pool.query(getallClients, []);
+    return allClients.rows;
+  } catch (error) {
+    console.log(error.message || error);
+  }
+};
 
+export const getClientByNameService = async (first_name) => {
+  try {
+    const result = await pool.query(selectClientByName, [first_name]);
+    return result.rows; // return all matching clients
+  } catch (error) {
+    console.log(error.message);
+    throw error;
+  }
+};
+
+export const deleteClientByIdService = async (id) => {
+  try {
+   const aff =  await pool.query(deleteClient, [id])
+   return aff.rowCount
+
+  } catch (error) {
+    console.log(error.message);
+    throw error;
+  }
+};

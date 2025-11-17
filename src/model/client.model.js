@@ -13,4 +13,12 @@ export const updateClientQuery = `
   RETURNING *;
 `;
 
-export const getallClients = `SELECT * FROM clients ORDER BY created_at DESC`;
+export const getallClients = `SELECT * FROM clients ORDER BY created_at DESC LIMIT 20`;
+
+export const selectClientByName = `
+  SELECT * FROM clients 
+  WHERE first_name ILIKE '%' || $1 || '%'
+  ORDER BY created_at DESC;
+`;
+
+export const deleteClient = `DELETE FROM clients WHERE id = $1`;
