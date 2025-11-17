@@ -21,4 +21,6 @@ export const selectClientByName = `
   ORDER BY created_at DESC;
 `;
 
+export const selectClientById = `SELECT * FROM clients WHERE id=$1`;
+
 export const deleteClient = `DELETE FROM clients WHERE id = $1`;
