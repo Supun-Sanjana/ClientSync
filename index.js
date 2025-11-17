@@ -1,13 +1,5 @@
-import express from "express";
-import dotenv from "dotenv";
-import pool from "./db.js";
-dotenv.config();
+import app from "./src/app.js";
 
-const app = express();
-
-pool.connect()
-
-app.use("/", (req, res) => res.sendStatus(200));
 const port = process.env.PORT || 5000;
 
 app.listen(port, () => {
