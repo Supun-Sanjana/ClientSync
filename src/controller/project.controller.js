@@ -46,7 +46,7 @@ export const getAllProjects = async (req, res) => {
   try {
     const projects = await getAllProjectService();
 
-    return res.status(200).json({ "projects ": projects });
+    return res.status(200).json({ "projects": projects });
   } catch (error) {
     console.log(error);
   }

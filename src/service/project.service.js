@@ -77,7 +77,7 @@ export const getProjectByIdService = async (id) => {
 export const deleteProjectService = async (id) => {
   try {
     const row = await pool.query(deleteProjectQuery, [id]);
-    return row.rowCount
+    return row.rowCount;
   } catch (error) {
     console.log(error);
   }
