@@ -22,7 +22,7 @@ CREATE TABLE IF NOT EXISTS projects (
     title VARCHAR(150) NOT NULL,
     description TEXT,
     status VARCHAR(50) DEFAULT 'pending',   -- pending, in progress, completed
-    start_date DATE,
+    start_date TIMESTAMP DEFAULT NOW(),
     end_date DATE,
     created_at TIMESTAMP DEFAULT NOW()
 );

@@ -1,5 +1,4 @@
 import pool from "../config/db.js";
-import { selectClientById } from "../model/client.model.js";
 import {
   allProjectQuery,
   createProjectQuery,
@@ -10,8 +9,7 @@ import {
 
 export const createProjectService = async (project) => {
   try {
-    const { client_id, title, description, status, start_date, end_date } =
-      project;
+    const { client_id, title, description } = project;
 
     if (!client_id || !title) {
       throw new Error("Some fileds are required !");
@@ -26,9 +24,9 @@ export const createProjectService = async (project) => {
       client_id,
       title,
       description,
-      start_date,
-      end_date,
+      
     ]);
+
     return row.rows[0];
   } catch (error) {
     console.log(error);
