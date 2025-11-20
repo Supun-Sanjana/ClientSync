@@ -50,7 +50,7 @@ export const updateClient = async (req, res) => {
 export const getAllClients = async (req, res) => {
   try {
     const clients = await getAllClientsService();
-    return res.status(200).json({ "clients": clients });
+    return res.status(200).json({clients });
   } catch (error) {
     console.log(error.message || error);
     res.status(500).json({ message: error.message || error });

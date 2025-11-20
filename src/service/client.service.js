@@ -12,7 +12,7 @@ import {
 export const createClientService = async (client) => {
   const { first_name, last_name, email, phone, company } = client;
 
-  if (!first_name || !email || !company) {
+  if (!first_name || !email ) {
     throw new Error("Some of the fields are missing.");
   }
 
