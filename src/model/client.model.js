@@ -24,3 +24,5 @@ export const selectClientByName = `
 export const selectClientById = `SELECT * FROM clients WHERE id=$1`;
 
 export const deleteClient = `DELETE FROM clients WHERE id = $1`;
+
+export const clientCountQuery = `SELECT COUNT(*) FROM clients`;

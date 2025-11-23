@@ -1,8 +1,10 @@
 import {
   createProjectService,
   deleteProjectService,
+  getActiveCountService,
   getAllProjectService,
   getProjectByIdService,
+  getRevenueService,
   updateProjectService,
 } from "../service/project.service.js";
 
@@ -46,7 +48,7 @@ export const getAllProjects = async (req, res) => {
   try {
     const projects = await getAllProjectService();
 
-    return res.status(200).json({ "projects": projects });
+    return res.status(200).json({ projects: projects });
   } catch (error) {
     console.log(error);
   }
@@ -83,8 +85,29 @@ export const deleteProject = async (req, res) => {
     return res
       .status(200)
       .json({ success: true, message: "Project deleted successfully" });
-
   } catch (error) {
     console.log(error);
+  }
+};
+
+export const getRevenue = async (_, res) => {
+  try {
+    const result = await getRevenueService();
+    if (result) {
+      return res.status(200).json({ result });
+    }
+  } catch (error) {
+    console.log(error.message || error);
+    res.status(500).json({ message: error.message || error });
+  }
+};
+
+export const getActiveCount = async (_, res) => {
+  try {
+    const {active, complete} = await getActiveCountService();
+    return res.status(200).json({ active,complete });
+  } catch (error) {
+    console.log(error.message || error);
+    throw new Error(error.message || "Server error");
   }
 };

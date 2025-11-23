@@ -1,6 +1,7 @@
 // services/client.service.js
 import pool from "../config/db.js";
 import {
+  clientCountQuery,
   createClientQuery,
   deleteClient,
   existingClientQuery,
@@ -90,3 +91,13 @@ export const deleteClientByIdService = async (id) => {
     throw error;
   }
 };
+
+export const getClientCountService = async ()=>{
+  try {
+    const result = await pool.query(clientCountQuery);
+    return result.rows[0].count
+  } catch (error) {
+    console.log(error.message);
+    throw error;
+  }
+}

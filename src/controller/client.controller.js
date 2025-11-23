@@ -3,6 +3,7 @@ import {
   deleteClientByIdService,
   getAllClientsService,
   getClientByNameService,
+  getClientCountService,
   updateClientService,
 } from "../service/client.service.js";
 
@@ -99,3 +100,14 @@ export const deleteClientById = async (req, res) => {
       .json({ success: false, message: error.message || "Server error" });
   }
 };
+
+
+export const getClientCount = async (_, res)=>{
+  try {
+    const result = await getClientCountService();
+    res.status(200).json({count:result})
+  } catch (error) {
+    console.log(error.message);
+    throw error;
+  }
+}
