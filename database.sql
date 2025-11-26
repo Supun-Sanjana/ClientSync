@@ -5,6 +5,16 @@
 -- \c clientsync;
 
 -- CLIENT TABLE
+CREATE TABLE IF NOT EXISTS user (
+    id SERIAL PRIMARY KEY,
+    full_name VARCHAR(100) NOT NULL,
+    user_name VARCHAR(100),
+    email VARCHAR(150) UNIQUE NOT NULL,
+    password VARCHAR(800),
+    created_at TIMESTAMP DEFAULT NOW()
+);
+
+
 CREATE TABLE IF NOT EXISTS clients (
     id SERIAL PRIMARY KEY,
     first_name VARCHAR(100) NOT NULL,

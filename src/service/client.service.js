@@ -13,7 +13,7 @@ import {
 export const createClientService = async (client) => {
   const { first_name, last_name, email, phone, company } = client;
 
-  if (!first_name || !email ) {
+  if (!first_name || !email) {
     throw new Error("Some of the fields are missing.");
   }
 
@@ -83,21 +83,20 @@ export const getClientByNameService = async (first_name) => {
 
 export const deleteClientByIdService = async (id) => {
   try {
-   const aff =  await pool.query(deleteClient, [id])
-   return aff.rowCount
-
+    const aff = await pool.query(deleteClient, [id]);
+    return aff.rowCount;
   } catch (error) {
     console.log(error.message);
     throw error;
   }
 };
 
-export const getClientCountService = async ()=>{
+export const getClientCountService = async () => {
   try {
     const result = await pool.query(clientCountQuery);
-    return result.rows[0].count
+    return result.rows[0].count;
   } catch (error) {
     console.log(error.message);
     throw error;
   }
-}
+};
