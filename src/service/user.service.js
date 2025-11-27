@@ -1,6 +1,7 @@
 import pool from "../config/db.js";
 import { loginUserQuery, registerUserQuery } from "../model/user.model.js";
 import bcrypt from "bcryptjs";
+import jwt from "jsonwebtoken";
 
 export const createUserService = async ({
   full_name,
@@ -37,17 +38,29 @@ export const loginUserService = async (email, password) => {
     if (!rows || rows.length === 0) {
       throw new Error("User not found");
     }
-
     const user = rows[0];
-
     const isMatch = await bcrypt.compare(password, user.password);
 
     if (!isMatch) {
       throw new Error("Invalid password");
     }
 
-    return user;
+    const payload = {
+      id: user.id,
+      email: user.email,
+      name: user.full_name,
+      user_name: user.user_name,
+    };
 
+    const token = jwt.sign(
+      { payload },
+      process.env.JWT_SECRET,
+      { expiresIn: "1h" }
+    );
+    console.log(token);
+    
+
+    return { user, token };
   } catch (e) {
     console.log(e.message);
     throw e;

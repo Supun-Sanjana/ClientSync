@@ -2,6 +2,8 @@ import {
   createUserService,
   loginUserService,
 } from "../service/user.service.js";
+import jwt from 'jsonwebtoken'
+
 
 export const registerUser = async (req, res) => {
   try {
@@ -24,10 +26,16 @@ export const registerUser = async (req, res) => {
 
 export const loginUser = async (req, res) => {
   const { email, password } = req.body;
+  console.log({email, password});
+  
 
   try {
-    const user = await loginUserService(email, password);
-    return res.status(200).json({ user });
+    const {user, token} = await loginUserService(email, password);
+
+    const data = jwt.decode(token)    
+    console.log(data);
+    
+    return res.status(200).json({ user , token});
   } catch (error) {
     return res.status(401).json({ message: error.message });
   }
