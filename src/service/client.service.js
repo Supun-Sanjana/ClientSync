@@ -41,6 +41,7 @@ export const createClientService = async (client) => {
 
 export const updateClientService = async (data, id) => {
   const { first_name, last_name, email, phone, company } = data;
+  console.log({ first_name, last_name, email, phone, company });
 
   const { rows } = await pool.query(updateClientQuery, [
     first_name,
@@ -50,6 +51,8 @@ export const updateClientService = async (data, id) => {
     company,
     id,
   ]);
+
+  
 
   return rows[0];
 };

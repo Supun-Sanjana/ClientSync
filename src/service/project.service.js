@@ -55,13 +55,14 @@ export const getProjectByIdService = async (id, user_id) => {
 
 
 export const updateProjectService = async (data, id, user_id) => {
-  const { client_id, title, description, status, start_date, end_date } = data;
+  const { client_id, title, description, status,cost, start_date, end_date } = data;
 
   const result = await pool.query(updateProjectQuery, [
     client_id,
     title,
     description,
     status,
+    cost,
     start_date,
     end_date,
     id,

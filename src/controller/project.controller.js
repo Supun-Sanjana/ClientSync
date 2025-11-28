@@ -62,8 +62,13 @@ export const updateProject = async (req, res) => {
   try {
     const id = parseInt(req.params.id);
     const user_id = parseInt(req.params.user_id);
+    console.log(user_id);
+    console.log(id);
+    
 
     const updated = await updateProjectService(req.body, id, user_id);
+    console.log(updated);
+    
 
     if (!updated)
       return res.status(404).json({ message: "Not found" });

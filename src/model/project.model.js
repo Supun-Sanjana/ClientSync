@@ -11,9 +11,10 @@ export const updateProjectQuery = `
     title=$2,
     description=$3,
     status=$4,
-    start_date=$5,
-    end_date=$6
-  WHERE id=$7 AND user_id=$8
+    cost=$5,
+    start_date=$6,
+    end_date=$7
+  WHERE id=$8 AND user_id=$9
   RETURNING *;
 `;
 

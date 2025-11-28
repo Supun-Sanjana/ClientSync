@@ -12,7 +12,7 @@ import {
 const projectRouter = Router();
 projectRouter.get('/user/:user_id', getAllProjects);
 projectRouter.get('/user/:user_id/:id', getProjectById);
-projectRouter.put('/user/:user_id/:id', updateProject);
+projectRouter.put('/:user_id/:id', updateProject);
 projectRouter.delete('/:user_id/:id', deleteProject);
 
 // Stats
