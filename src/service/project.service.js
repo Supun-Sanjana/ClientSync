@@ -9,15 +9,10 @@ import {
   updateProjectQuery,
 } from "../model/project.model.js";
 
+
 export const createProjectService = async (project) => {
   try {
-    const { client_id, title, description, cost, end_date, start_date, status } = project;
-
-    if (!client_id || !title) {
-      throw new Error("Some fileds are required !");
-    }
-
-    const row = await pool.query(createProjectQuery, [
+    const {
       client_id,
       title,
       description,
@@ -25,83 +20,93 @@ export const createProjectService = async (project) => {
       status,
       start_date,
       end_date,
+      user_id
+    } = project;
 
-    ]);
-
-    return row.rows[0];
-  } catch (error) {
-    console.log(error);
-  }
-};
-
-export const updateProjectService = async (project, id) => {
-  const { client_id, title, description, status, start_date, end_date } =
-    project;
-
-  try {
-    const row = await pool.query(updateProjectQuery, [
+    const result = await pool.query(createProjectQuery, [
       client_id,
       title,
       description,
-      status || "pending",
+      cost,
+      status ?? "pending",
       start_date,
       end_date,
-      id,
+      user_id
     ]);
-    return row.rows[0];
-  } catch (error) {
-    console.log(error);
-  }
-};
 
-export const getAllProjectService = async () => {
-  try {
-    const row = await pool.query(allProjectQuery);
-    return row.rows;
-  } catch (error) {
-    console.log(error);
-  }
-};
-
-export const getProjectByIdService = async (id) => {
-  try {
-    const conId = parseInt(id);
-    const project = await pool.query(projectByIdQuery, [conId]);
-    return project.rows[0];
-  } catch (error) {
-    console.log(error);
-  }
-};
-
-export const deleteProjectService = async (id) => {
-  try {
-    const row = await pool.query(deleteProjectQuery, [id]);
-    return row.rowCount;
-  } catch (error) {
-    console.log(error);
+    return result.rows[0];
+  } catch (err) {
+    console.log(err);
+    throw err;
   }
 };
 
 
-export const getRevenueService = async () => {
+export const getAllProjectService = async (user_id) => {
+  const result = await pool.query(allProjectQuery, [user_id]);
+  return result.rows;
+};
+
+
+export const getProjectByIdService = async (id, user_id) => {
+  const result = await pool.query(projectByIdQuery, [id, user_id]);
+  return result.rows[0];
+};
+
+
+export const updateProjectService = async (data, id, user_id) => {
+  const { client_id, title, description, status, start_date, end_date } = data;
+
+  const result = await pool.query(updateProjectQuery, [
+    client_id,
+    title,
+    description,
+    status,
+    start_date,
+    end_date,
+    id,
+    user_id
+  ]);
+
+  return result.rows[0];
+};
+
+
+export const deleteProjectService = async (id, user_id) => {
+  const result = await pool.query(deleteProjectQuery, [id, user_id]);
+  return result.rowCount;
+};
+
+
+export const getActiveCountService = async (user_id) => {
   try {
-    const result = await pool.query(getRevenueQuery);
-    return result.rows[0].sum;  // only return the numeric SUM
+    const id = parseInt(user_id);
+    if (isNaN(id)) {
+      throw new Error("Invalid user_id");
+    }
+
+    const result = await pool.query(getActiveProjectQuery, [id]);
+
+    return {
+      active: Number(result.rows[0].active_count) || 0,
+      complete: Number(result.rows[0].completed_count) || 0,
+    };
   } catch (error) {
     console.log(error.message || error);
     throw new Error(error.message || "Server error");
   }
 };
 
-export const getActiveCountService = async ()=>{
+
+export const getRevenueService = async (user_id) => {
   try {
-    const result = await pool.query(getActiveProjectQuery);
-    const complete = result.rows[0].completed_count
-    const active = result.rows[0].active_count
-    return {complete, active}
+     const result = await pool.query(getRevenueQuery, [user_id]);
+
+    const revenue = Number(result.rows[0].sum) || 0;    
+
+    return revenue;
   } catch (error) {
     console.log(error.message || error);
     throw new Error(error.message || "Server error");
   }
-}
-
+};

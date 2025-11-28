@@ -1,6 +1,6 @@
 export const createClientQuery = `
-  INSERT INTO clients (first_name, last_name, email, phone, company)
-  VALUES ($1, $2, $3, $4, $5)
+  INSERT INTO clients (first_name, last_name, email, phone, company, user_id)
+  VALUES ($1, $2, $3, $4, $5, $6) 
   RETURNING *;
 `;
 
@@ -13,11 +13,16 @@ export const updateClientQuery = `
   RETURNING *;
 `;
 
-export const getallClients = `SELECT * FROM clients ORDER BY created_at DESC LIMIT 20`;
+export const getallClients = `
+  SELECT * FROM clients 
+  WHERE user_id=$1 
+  ORDER BY created_at DESC 
+  LIMIT 20
+`;
 
 export const selectClientByName = `
   SELECT * FROM clients 
-  WHERE first_name ILIKE '%' || $1 || '%'
+  WHERE first_name ILIKE '%' || $1 || '%' 
   ORDER BY created_at DESC;
 `;
 
@@ -25,4 +30,7 @@ export const selectClientById = `SELECT * FROM clients WHERE id=$1`;
 
 export const deleteClient = `DELETE FROM clients WHERE id = $1`;
 
-export const clientCountQuery = `SELECT COUNT(*) FROM clients`;
+export const clientCountQuery = `
+  SELECT COUNT(*) FROM clients 
+  WHERE user_id=$1
+`;

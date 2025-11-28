@@ -1,4 +1,3 @@
-// services/client.service.js
 import pool from "../config/db.js";
 import {
   clientCountQuery,
@@ -11,25 +10,20 @@ import {
 } from "../model/client.model.js";
 
 export const createClientService = async (client) => {
-  const { first_name, last_name, email, phone, company } = client;
+  const { first_name, last_name, email, phone, company, user_id } = client;
+  
+  console.log("BACKEND RECEIVED:", client);
 
-  if (!first_name || !email) {
-    throw new Error("Some of the fields are missing.");
+  if (!first_name || !email || !user_id) {
+    throw new Error("Missing required fields or user_id");
   }
 
-  //Always pass the query parameters as an array. in pg ( PostgreSQL )
-  const existingClient = await pool.query(existingClientQuery, [email]);
-  if (existingClient.rows.length > 0) {
-    throw new Error("Client already exists.");
-  }
+  const uid = parseInt(user_id);
+  if (isNaN(uid)) throw new Error("Invalid user_id (NaN)");
 
-  console.log("Values to insert:", [
-    client.first_name,
-    client.last_name,
-    client.email,
-    client.phone,
-    client.company,
-  ]);
+  // check duplicate by email
+  const existing = await pool.query(existingClientQuery, [email]);
+  if (existing.rows.length > 0) throw new Error("Client already exists");
 
   const { rows } = await pool.query(createClientQuery, [
     first_name,
@@ -37,66 +31,51 @@ export const createClientService = async (client) => {
     email,
     phone,
     company,
+    uid
   ]);
+
+
+
   return rows[0];
 };
 
 export const updateClientService = async (data, id) => {
-  console.log(id);
-  console.log(data);
+  const { first_name, last_name, email, phone, company } = data;
 
-  try {
-    const { first_name, last_name, email, phone, company } = data;
+  const { rows } = await pool.query(updateClientQuery, [
+    first_name,
+    last_name,
+    email,
+    phone,
+    company,
+    id,
+  ]);
 
-    const { rows } = await pool.query(updateClientQuery, [
-      first_name,
-      last_name,
-      email,
-      phone,
-      company,
-      id,
-    ]);
-    return rows[0];
-  } catch (error) {
-    console.log(error.message || error);
-  }
+  return rows[0];
 };
 
-export const getAllClientsService = async () => {
-  try {
-    const allClients = await pool.query(getallClients, []);
-    return allClients.rows;
-  } catch (error) {
-    console.log(error.message || error);
-  }
+export const getAllClientsService = async (user_id) => {
+  const uid = parseInt(user_id);
+  if (isNaN(uid)) throw new Error("User ID is NaN");
+
+  const result = await pool.query(getallClients, [uid]);
+  return result.rows;
 };
 
 export const getClientByNameService = async (first_name) => {
-  try {
-    const result = await pool.query(selectClientByName, [first_name]);
-    return result.rows; // return all matching clients
-  } catch (error) {
-    console.log(error.message);
-    throw error;
-  }
+  const result = await pool.query(selectClientByName, [first_name]);
+  return result.rows;
 };
 
 export const deleteClientByIdService = async (id) => {
-  try {
-    const aff = await pool.query(deleteClient, [id]);
-    return aff.rowCount;
-  } catch (error) {
-    console.log(error.message);
-    throw error;
-  }
+  const result = await pool.query(deleteClient, [id]);
+  return result.rowCount;
 };
 
-export const getClientCountService = async () => {
-  try {
-    const result = await pool.query(clientCountQuery);
-    return result.rows[0].count;
-  } catch (error) {
-    console.log(error.message);
-    throw error;
-  }
+export const getClientCountService = async (user_id) => {
+  const uid = parseInt(user_id);
+  if (isNaN(uid)) throw new Error("User ID is NaN");
+
+  const result = await pool.query(clientCountQuery, [uid]);
+  return result.rows[0].count;
 };

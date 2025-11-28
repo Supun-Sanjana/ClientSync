@@ -18,6 +18,11 @@ export const createUserService = async ({
     const hash = await bcrypt.hash(password, salt);
     console.log(hash);
 
+    const result = await pool.query(loginUserQuery, [email]);
+    if (result.rowCount > 0) {
+      throw new Error("Email already registerd");
+    }
+
     const { rows } = await pool.query(registerUserQuery, [
       full_name,
       user_name,
@@ -26,8 +31,8 @@ export const createUserService = async ({
     ]);
     return rows[0];
   } catch (e) {
-    console.log(e || e.message);
-    throw new Error(e);
+    console.log(e.message);
+    throw e; // send the SAME error to controller
   }
 };
 
@@ -52,13 +57,10 @@ export const loginUserService = async (email, password) => {
       user_name: user.user_name,
     };
 
-    const token = jwt.sign(
-      { payload },
-      process.env.JWT_SECRET,
-      { expiresIn: "1h" }
-    );
+    const token = jwt.sign({ payload }, process.env.JWT_SECRET, {
+      expiresIn: "1h",
+    });
     console.log(token);
-    
 
     return { user, token };
   } catch (e) {

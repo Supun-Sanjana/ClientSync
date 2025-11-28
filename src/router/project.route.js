@@ -4,24 +4,23 @@ import {
   deleteProject,
   getActiveCount,
   getAllProjects,
-  getProjetById,
+  getProjectById,
   getRevenue,
   updateProject,
 } from "../controller/project.controller.js";
 
 const projectRouter = Router();
+projectRouter.get('/user/:user_id', getAllProjects);
+projectRouter.get('/user/:user_id/:id', getProjectById);
+projectRouter.put('/user/:user_id/:id', updateProject);
+projectRouter.delete('/:user_id/:id', deleteProject);
 
-// Static or specific routes FIRST
-projectRouter.get('/revenue', getRevenue);
-projectRouter.get('/active-count', getActiveCount);
+// Stats
+projectRouter.get('/revenue/:user_id', getRevenue);
+projectRouter.get('/active-count/:user_id', getActiveCount);
 
-// Normal CRUD routes
+// Create
 projectRouter.post('/', createProject);
-projectRouter.get('/', getAllProjects);
 
-// Dynamic routes LAST
-projectRouter.get('/:id', getProjetById);
-projectRouter.put('/:id', updateProject);
-projectRouter.delete('/:id', deleteProject);
 
 export default projectRouter;

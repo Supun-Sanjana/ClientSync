@@ -9,6 +9,7 @@ import {
 } from "../service/project.service.js";
 
 export const createProject = async (req, res) => {
+  
   const projects = req.body;
 
   try {
@@ -28,86 +29,89 @@ export const createProject = async (req, res) => {
   }
 };
 
-export const updateProject = async (req, res) => {
-  const { id } = req.params;
-
-  try {
-    const newProject = await updateProjectService(req.body, id);
-    if (!newProject) {
-      return res
-        .status(404)
-        .json({ success: false, message: `Project with ID ${id} not found` });
-    }
-    return res.status(200).json({ "updated project": newProject });
-  } catch (error) {
-    console.log(error);
-  }
-};
 
 export const getAllProjects = async (req, res) => {
   try {
-    const projects = await getAllProjectService();
-
-    return res.status(200).json({ projects: projects });
-  } catch (error) {
-    console.log(error);
+    const user_id = parseInt(req.params.user_id);
+    const projects = await getAllProjectService(user_id);
+    res.json({ projects });
+  } catch (e) {
+    console.log(e);
+    res.status(500).json({ error: "Server Error" });
   }
 };
 
-export const getProjetById = async (req, res) => {
-  const { id } = req.params;
 
+export const getProjectById = async (req, res) => {
   try {
-    const project = await getProjectByIdService(id);
-    if (!project) {
-      return res
-        .status(404)
-        .json({ message: `Project with thid id ${id} not found` });
-    }
+    const id = parseInt(req.params.id);
+    const user_id = parseInt(req.params.user_id);
+    const project = await getProjectByIdService(id, user_id);
 
-    res.status(200).json({ project: project });
-  } catch (error) {
-    console.log(error);
+    if (!project)
+      return res.status(404).json({ message: "Not found" });
+
+    res.json({ project });
+  } catch (e) {
+    res.status(500).json({ error: "Server error" });
   }
 };
+
+
+export const updateProject = async (req, res) => {
+  try {
+    const id = parseInt(req.params.id);
+    const user_id = parseInt(req.params.user_id);
+
+    const updated = await updateProjectService(req.body, id, user_id);
+
+    if (!updated)
+      return res.status(404).json({ message: "Not found" });
+
+    res.json({ updated });
+  } catch (e) {
+    res.status(500).json({ error: "Server error" });
+  }
+};
+
 
 export const deleteProject = async (req, res) => {
-  const { id } = req.params;
   try {
-    const deleteProject = await deleteProjectService(id);
+    const id = parseInt(req.params.id);
+    const user_id = parseInt(req.params.user_id);
 
-    if (deleteProject === 0) {
-      return res
-        .status(404)
-        .json({ success: false, message: `Project with ID ${id} not found` });
-    }
+    const deleted = await deleteProjectService(id, user_id);
 
-    return res
-      .status(200)
-      .json({ success: true, message: "Project deleted successfully" });
-  } catch (error) {
-    console.log(error);
+    if (!deleted)
+      return res.status(404).json({ message: "Not found" });
+
+    res.json({ success: true });
+  } catch (e) {
+    res.status(500).json({ error: "Server error" });
   }
 };
 
-export const getRevenue = async (_, res) => {
+export const getActiveCount = async (req, res) => {
+  const { user_id } = req.params;
+
   try {
-    const result = await getRevenueService();
-    if (result) {
-      return res.status(200).json({ result });
-    }
+    const counts = await getActiveCountService(user_id);
+    return res.status(200).json(counts);
   } catch (error) {
-    console.log(error.message || error);
-    res.status(500).json({ message: error.message || error });
+    res.status(500).json({ message: error.message });
   }
 };
 
-export const getActiveCount = async (_, res) => {
+
+export const getRevenue = async (req, res) => {
+  const { user_id } = req.params;
+  const id = parseInt(user_id)
+
   try {
-    const {active, complete} = await getActiveCountService();
-    return res.status(200).json({ active,complete });
+    const revenue = await getRevenueService(id);
+    return res.status(200).json({ revenue });
   } catch (error) {
     console.log(error.message || error);
-    throw new Error(error.message || "Server error");
+    res.status(500).json({ message: error.message });
   }
 };

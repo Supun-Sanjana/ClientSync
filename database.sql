@@ -5,7 +5,7 @@
 -- \c clientsync;
 
 -- CLIENT TABLE
-CREATE TABLE IF NOT EXISTS user (
+CREATE TABLE IF NOT EXISTS users (
     id SERIAL PRIMARY KEY,
     full_name VARCHAR(100) NOT NULL,
     user_name VARCHAR(100),
@@ -17,6 +17,7 @@ CREATE TABLE IF NOT EXISTS user (
 
 CREATE TABLE IF NOT EXISTS clients (
     id SERIAL PRIMARY KEY,
+    user_id INT REFERENCES users(id) ON DELETE CASCADE NOT NULL,
     first_name VARCHAR(100) NOT NULL,
     last_name VARCHAR(100),
     email VARCHAR(150) UNIQUE NOT NULL,
