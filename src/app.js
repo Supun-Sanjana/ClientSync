@@ -11,7 +11,7 @@ app.use(express.json());
 
 // Use CORS globally
 const corsOptions = {
-  origin: ['http://localhost:5173', "https://clientsync-production.up.railway.app"], // remove trailing slash
+  origin: ['http://localhost:5173','https://client-sync-sig.vercel.app/', "https://clientsync-production.up.railway.app"], // remove trailing slash
   optionsSuccessStatus: 200 // legacy browsers
 };
 app.use(cors(corsOptions))
